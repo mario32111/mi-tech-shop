@@ -35,7 +35,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white shadow-md pt-4 animate-slide-in-top">
-      <div className="w-full max-w-[1280px] pb-4 mx-auto px-4 flex justify-between items-center min-h-[56px]">
+      <div className="w-full max-w-3xl pb-4 mx-auto px-4 flex justify-between items-center min-h-[56px]">
         <Link href="/" className="block md:hidden text-2xl font-bold text-gray-900 hover:text-accent-blue transition-colors duration-200">
           M-S
         </Link>

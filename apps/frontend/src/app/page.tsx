@@ -1,7 +1,7 @@
 'use client';
 // pages/HomePage.js
 import Head from 'next/head';
-import HeroSlider from './ui/heroslider'; // Import the new slider component
+import HeroSlider from './ui/HeroSlider'; // Import the new slider component
 
 export default function HomePage() {
   return (
