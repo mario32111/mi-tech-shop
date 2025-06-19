@@ -20,7 +20,7 @@ export default function Navbar() {
       setIsOpen(true);
     }
   };
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
@@ -34,8 +34,8 @@ export default function Navbar() {
 
 
   return (
-    <nav className="bg-white shadow-md py-4 animate-slide-in-top">
-      <div className="container mx-auto px-4 flex justify-between items-center">
+    <nav className="bg-white shadow-md pt-4 animate-slide-in-top">
+      <div className="w-full max-w-[1280px] pb-4 mx-auto px-4 flex justify-between items-center min-h-[56px]">
         <Link href="/" className="block md:hidden text-2xl font-bold text-gray-900 hover:text-accent-blue transition-colors duration-200">
           M-S
         </Link>
@@ -46,7 +46,7 @@ export default function Navbar() {
         </Link>
 
         {/* Barra de Búsqueda (Escritorio) - se muestra entre el logo y los enlaces principales */}
-        <div className="md:block flex-grow mx-8 max-w-md">
+        <div className="mx-2 sm:mx-8 md:mx-4 flex-grow max-w-lg">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
@@ -122,11 +122,10 @@ export default function Navbar() {
       {/* Menú Móvil Desplegable*/}
       {(isOpen || isClosing) && (
         <div
-          className={`bg-white border-t border-gray-200 py-4 mt-2 transition-all duration-300 transform ${
-            isOpen && !isClosing
-              ? 'opacity-100 translate-y-0 pointer-events-auto'
-              : 'opacity-0 -translate-y-2 pointer-events-none'
-          }`}
+          className={`bg-white border-t border-gray-200 py-4 mt-2 transition-all duration-300 transform ${isOpen && !isClosing
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 -translate-y-2 pointer-events-none'
+            }`}
         >
           <div className="flex flex-col items-center space-y-4 px-4">
             <Link href="/productos" className="animate-slide-in-top animate-delay-50 animate-duration-50 text-gray-700 hover:text-accent-blue font-medium w-full text-center py-2 transition-colors duration-200" onClick={toggleMenu}>

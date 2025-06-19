@@ -1,4 +1,7 @@
-import Head from 'next/head'; // Importa Head para el SEO y metadatos
+'use client';
+// pages/HomePage.js
+import Head from 'next/head';
+import HeroSlider from './ui/heroslider'; // Import the new slider component
 
 export default function HomePage() {
   return (
@@ -6,27 +9,13 @@ export default function HomePage() {
       <Head>
         <title>Mi-Shop | Tu Destino para la Tecnología del Mañana</title>
         <meta name="description" content="Descubre los gadgets más innovadores, componentes de alto rendimiento y las mejores ofertas en tecnología." />
-        {/* Aquí puedes añadir enlaces a Google Fonts para 'Inter' si no lo haces en globals.css */}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="font-sans"> {/* Aplica la fuente Inter a toda la página */}
-
+      <div>
         {/* --- Sección Hero (Principal) --- */}
-        <section className="animate-zoom-in bg-gray-50 text-center py-20 lg:py-32">
-          <div className="container mx-auto px-4"> {/* Contenedor para centrar y añadir padding */}
-            <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
-              Tu Destino para la Tecnología del Mañana
-            </h1>
-            <p className="text-lg lg:text-xl text-gray-700 mb-10 max-w-3xl mx-auto">
-              Descubre los gadgets más innovadores, componentes de alto rendimiento y las mejores ofertas, diseñados para impulsar tu futuro.
-            </p>
-            {/* Botón con el color de acento azul */}
-            <button className="bg-accent-blue hover:bg-accent-blue-dark text-white font-semibold py-3 px-8 rounded-full text-lg transition-colors duration-300 shadow-md hover:shadow-lg">
-              Explora Productos
-            </button>
-          </div>
-        </section>
+        {/* Replace the static section with the HeroSlider component */}
+        <HeroSlider />
 
         {/* --- Sección de Productos Destacados --- */}
         <section className="py-16 bg-white">
@@ -57,8 +46,8 @@ export default function HomePage() {
                   Añadir al Carrito
                 </button>
               </div>
-               {/* Tarjeta de Producto - Ejemplo 3 */}
-               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200">
+              {/* Tarjeta de Producto - Ejemplo 3 */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200">
                 <img src="/placeholder-watch.jpg" alt="Smartwatch X" className="w-full h-48 object-contain mb-4 rounded-md" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Smartwatch X</h3>
                 <p className="text-gray-600 mb-3 text-lg font-bold">$249.00</p>
@@ -67,8 +56,8 @@ export default function HomePage() {
                   Añadir al Carrito
                 </button>
               </div>
-               {/* Tarjeta de Producto - Ejemplo 4 */}
-               <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200">
+              {/* Tarjeta de Producto - Ejemplo 4 */}
+              <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200">
                 <img src="/placeholder-headphones.jpg" alt="Auriculares Pro" className="w-full h-48 object-contain mb-4 rounded-md" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Auriculares Pro X</h3>
                 <p className="text-gray-600 mb-3 text-lg font-bold">$199.99</p>
