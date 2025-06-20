@@ -1,25 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useRef } from 'react'; // Importamos useRef
-import { SearchResults } from './SearchResults'; // Asegúrate de que esta sea la ruta correcta
-import { searchProducts } from '../lib/data'; // Tu función de búsqueda (Client-Side compatible)
-import { Product } from '../lib/definitions'; // Tu definición de producto
+import { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation'; // Importa useRouter
+import { searchProducts } from '../lib/data'; // Your client-side search function
+import { Product } from '../lib/definitions'; // Your product definition
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [itemCount] = useState(3);
+  const [itemCount] = useState(3); // Assuming this is for a cart item count
   const [searchTerm, setSearchTerm] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [productos, setProductos] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false); // Nuevo estado para el loading
-  const searchInputRef = useRef<HTMLInputElement>(null); // Ref para el input de búsqueda
+  const [showSuggestions, setShowSuggestions] = useState(false); // Renamed for clarity
+  const [suggestions, setSuggestions] = useState<Product[]>([]); // Renamed for clarity
+  const [isLoading, setIsLoading] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Función para cerrar el menú y limpiar la búsqueda
+  const router = useRouter(); // Initialize useRouter
+
+  // Function to close the menu and clear the search/suggestions
   const toggleMenu = () => {
-    // Si el menú está abierto y hay resultados de búsqueda, los ocultamos primero
-    if (showSearchResults) {
+    if (showSuggestions) {
       resetSearchbar();
     }
     if (isOpen) {
@@ -27,7 +28,7 @@ export default function Navbar() {
       setTimeout(() => {
         setIsOpen(false);
         setIsClosing(false);
-      }, 300); // Duración igual a la de Tailwind (300ms)
+      }, 300); // Duration matches Tailwind (300ms)
     } else {
       setIsOpen(true);
     }
@@ -36,38 +37,31 @@ export default function Navbar() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchTerm(value);
-    // Mostrar resultados solo si hay algo escrito
-    setShowSearchResults(value.trim().length > 0);
+    // Show suggestions only if there's something typed
+    setShowSuggestions(value.trim().length > 0);
   };
 
   const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchTerm.trim()) {
-      // **Recomendado:** Redirigir a una página de resultados de búsqueda SSR
-      // Si tienes un router hook de Next.js, puedes usarlo aquí:
-      // import { useRouter } from 'next/navigation';
-      // const router = useRouter();
-      // router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
-      console.log('Realizando búsqueda para:', searchTerm);
-      resetSearchbar(); // Limpia la barra después de enviar la búsqueda
+      // Redirect to the search results page with the search term
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      resetSearchbar(); // Clear the search bar after submission
     }
   };
 
-  // Cierre del menú al hacer clic fuera
+  // Close menu and suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      // Usar un nombre de clase más específico o ref para el navbar si es complejo
-      // En este ejemplo, el navbar no tiene una clase específica, así que usaremos una ref para él si es posible.
-      // Asumamos que el div principal del nav tiene una clase 'navbar-container' si no, envolverlo o usar ref
-      const navbarElement = target.closest('nav');
+      const navElement = target.closest('nav'); // Reference to the whole nav element
 
-      // Si el clic fue en un enlace del menú o dentro del propio navbar, no hacemos nada
-      if (target.closest('a[href]') || navbarElement) {
+      // If the click was inside the nav or on a menu link, do nothing
+      if (navElement) {
         return;
       }
 
-      // Solo cierra si el clic fue fuera del navbar y el menú está abierto
+      // Only close if the click was outside the nav AND the menu or suggestions are open
       if (isOpen) {
         setIsClosing(true);
         setTimeout(() => {
@@ -75,60 +69,67 @@ export default function Navbar() {
           setIsClosing(false);
         }, 300);
       }
+      if (showSuggestions) {
+        setShowSuggestions(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, showSuggestions]); // Add showSuggestions to dependency array
 
-  // Manejo de la búsqueda en tiempo real para el dropdown
+  // Handle real-time search for suggestions (debounced)
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
-    const fetchProducts = async () => {
-      setIsLoading(true); // Activa el estado de carga
+    const fetchSuggestions = async () => {
+      setIsLoading(true);
       try {
-        const fetchedProducts: Product[] = await searchProducts(searchTerm);
-        setProductos(fetchedProducts);
+        // Fetch fewer results for suggestions, perhaps limit to 5-10
+        const fetchedProducts: Product[] = await searchProducts(searchTerm); // Add limit parameter if your searchProducts supports it
+        setSuggestions(fetchedProducts.slice(0, 5));
       } catch (error) {
-        console.error("Error fetching search results:", error);
-        setProductos([]); // En caso de error, limpia los productos
+        console.error('Error fetching search suggestions:', error);
+        setSuggestions([]);
       } finally {
-        setIsLoading(false); // Desactiva el estado de carga
+        setIsLoading(false);
       }
     };
 
-    if (searchTerm.trim().length >= 2) { // Buscar si hay al menos 2 caracteres
-      timeoutId = setTimeout(fetchProducts, 300); // Debounce de 300ms
+    if (searchTerm.trim().length >= 2) { // Fetch suggestions if at least 2 characters
+      timeoutId = setTimeout(fetchSuggestions, 300); // Debounce of 300ms
     } else {
-      setProductos([]); // Limpia los resultados si el término es muy corto o vacío
-      setIsLoading(false); // Asegúrate de que no esté en estado de carga si se borra el texto
+      setSuggestions([]); // Clear suggestions if term is too short or empty
+      setIsLoading(false);
     }
 
     return () => {
-      clearTimeout(timeoutId); // Limpia el timeout si el componente se desmonta o el searchTerm cambia
+      clearTimeout(timeoutId); // Clear timeout if component unmounts or searchTerm changes
     };
   }, [searchTerm]);
 
   const resetSearchbar = () => {
     setSearchTerm('');
-    setShowSearchResults(false);
-    setProductos([]); // También limpia los productos del estado
+    setShowSuggestions(false);
+    setSuggestions([]);
   };
 
   const handleInputBlur = () => {
-    // Retrasar el ocultamiento para permitir clics en los resultados
+    // Delay hiding to allow clicks on suggestions.
+    // However, for navigation (which is what suggestions typically do),
+    // a small delay is still good, but you need to be careful not to
+    // close before the click event registers.
     setTimeout(() => {
-      setShowSearchResults(false);
+      setShowSuggestions(false);
     }, 150);
   };
 
   const handleInputFocus = () => {
-    // Mostrar resultados si el input tiene contenido y se enfoca
+    // Show suggestions if input has content when focused
     if (searchTerm.trim().length > 0) {
-      setShowSearchResults(true);
+      setShowSuggestions(true);
     }
   };
 
@@ -152,11 +153,10 @@ export default function Navbar() {
             Mi-Shop
           </Link>
 
-          {/* Barra de Búsqueda */}
-          <div className="mx-2 sm:mx-8 md:mx-4 flex-grow flex justify-center"> {/* Cambiamos a flex y justify-center */}
-            <div className="relative w-full max-w-2xl"> {/* Añadimos un contenedor intermedio con max-width */}
+          {/* Search Bar and Suggestions */}
+          <div className="mx-2 sm:mx-8 md:mx-4 flex-grow flex justify-center">
+            <div className="relative w-full max-w-2xl">
               <form onSubmit={handleSearchSubmit} className="relative">
-                {/* Input de búsqueda (se mantiene igual) */}
                 <input
                   ref={searchInputRef}
                   type="text"
@@ -167,29 +167,57 @@ export default function Navbar() {
                   onFocus={handleInputFocus}
                   onBlur={handleInputBlur}
                 />
-                <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  {/* Icono de lupa */}
+                <button
+                  type="submit"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
                 </button>
               </form>
 
-              {/* Dropdown de resultados de búsqueda - Cambios aquí */}
-              {showSearchResults && (
-                <div className="absolute left-1/2 -translate-x-1/2 w-[80vw]  bg-white border border-gray-200 rounded-md shadow-lg z-20 mt-1 max-h-80 overflow-y-auto">
-                  {/* Contenido de los resultados se mantiene igual */}
+              {/* Suggestions Dropdown */}
+              {showSuggestions && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[90vw] md:w-[calc(100%+2rem)] max-w-2xl bg-white border border-gray-200 rounded-md shadow-lg z-20 mt-1 max-h-80 overflow-y-auto">
                   {isLoading ? (
                     <div className="p-4 text-center text-gray-500">
-                      Buscando productos...
+                      Buscando sugerencias...
                     </div>
                   ) : searchTerm.trim().length < 2 ? (
                     <div className="p-4 text-center text-gray-500">
-                      Escribe al menos 2 caracteres para buscar.
+                      Escribe al menos 2 caracteres para sugerencias.
                     </div>
-                  ) : productos.length > 0 ? (
-                    <SearchResults productos={productos} />
+                  ) : suggestions.length > 0 ? (
+                    <div className="py-2">
+                      {suggestions.map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/product/${product.id}`} // Link to product detail page
+                          onClick={() => resetSearchbar()} // Clear search on suggestion click
+                          className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                          <img
+                            src={product.thumbnail} // Assuming 'thumbnail' exists or use images[0]
+                            alt={product.title}
+                            className="w-8 h-8 object-cover rounded mr-2"
+                          />
+                          <span className="text-gray-800 text-sm truncate">{product.title}</span>
+                        </Link>
+                      ))}
+                      {/* Option to view all results for the current search term */}
+                      <Link
+                        href={`/search?q=${encodeURIComponent(searchTerm.trim())}`}
+                        onClick={() => resetSearchbar()}
+                        className="block text-center p-2 text-accent-blue hover:underline font-medium border-t border-gray-200 mt-2 pt-2"
+                      >
+                        Ver todos los resultados para "{searchTerm}"
+                      </Link>
+                    </div>
                   ) : (
                     <div className="p-4 text-center">
                       <p className="text-gray-600 font-medium mb-2">
-                        ¡Vaya! No encontramos resultados para "
+                        No encontramos sugerencias para "
                         <span className="font-semibold text-accent-blue">{searchTerm}</span>"
                       </p>
                       <p className="text-gray-500 text-sm">
@@ -202,9 +230,9 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Botón de Menú Hamburguesa (Móvil) y Carrito para Móvil */}
+          {/* Hamburger Menu Button (Mobile) and Cart for Mobile */}
           <div className="flex items-center space-x-4">
-            {/* Icono de Carrito de Compras (Móvil) */}
+            {/* Shopping Cart Icon (Mobile) */}
             <Link href="/cart" className="relative text-gray-700 hover:text-accent-blue transition-colors duration-200">
               <svg
                 className="w-6 h-6"
@@ -245,12 +273,12 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Menú Móvil Desplegable */}
+        {/* Mobile Menu Dropdown */}
         {(isOpen || isClosing) && (
           <div
             className={`bg-white border-t border-gray-200 py-4 mt-2 transition-all duration-300 transform ${isOpen && !isClosing
-              ? 'opacity-100 translate-y-0 pointer-events-auto'
-              : 'opacity-0 -translate-y-2 pointer-events-none'
+                ? 'opacity-100 translate-y-0 pointer-events-auto'
+                : 'opacity-0 -translate-y-2 pointer-events-none'
               }`}
           >
             <div className="flex flex-col items-center space-y-4 px-4">
