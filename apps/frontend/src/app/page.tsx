@@ -1,3 +1,4 @@
+// app/page.tsx
 // * Comentario resaltado → Verde (para información importante).
 
 // ! Alerta o problema → Rojo (para advertencias críticas).
@@ -9,13 +10,29 @@
 // // Comentario tachado → Gris tachado (para código deshabilitado).
 import Head from 'next/head';
 import HeroSlider from './ui/HeroSlider'; // Import the new slider component
-import ProductCard from './ui/ProductCard';
-import { ProductResponse } from './lib/definitions'; // Ensure this path is correct
 import { Suspense } from 'react';
 
-export default async function HomePage() {
-  const productos: ProductResponse[] = await getOfertas();
+// * Importa el nuevo componente que carga los datos
+import ProductGridLoader from '../app/ui/ProductGridLoader'; // Asegúrate de la ruta correcta
 
+function ProductsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="bg-white rounded-lg shadow-md p-4 animate-pulse">
+          <div className="h-32 bg-gray-200 rounded mb-4"></div>
+          <div className="h-6 bg-gray-200 rounded mb-2"></div>
+          <div className="h-6 bg-gray-200 rounded mb-2"></div>
+          <div className="h-10 bg-gray-200 rounded"></div>
+        </div>
+      ))}
+
+    </div>
+
+  );
+}
+
+export default async function HomePage() {
   return (
     <>
       <Head>
@@ -26,7 +43,7 @@ export default async function HomePage() {
 
       <div>
         {/* --- Sección Hero (Principal) --- */}
-        {/* Replace the static section with the HeroSlider component */}
+        {/* * HeroSlider ahora se muestra de inmediato */}
         <HeroSlider />
 
         {/* --- Sección de Productos Destacados --- */}
@@ -35,46 +52,37 @@ export default async function HomePage() {
             <h2 className="text-3xl lg:text-4xl font-semibold text-center text-gray-800 mb-12">
               Productos Destacados
             </h2>
-            {/*// TODO: refactor the ProductCard to use a skeleton loader */}
-            <Suspense fallback={<p className="text-gray-400">Loading...</p>}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {productos.map((oferta) => (
-                <ProductCard key={oferta.id} product={oferta} />
-              ))}
-            </div>
+            {/* * Aquí es donde Suspense ahora será efectivo para la carga principal */}
+            <Suspense fallback={<ProductsSkeleton />}>
+              <ProductGridLoader /> {/* <-- ¡La carga de 10 segundos ocurre aquí adentro! */}
             </Suspense>
-
           </div>
         </section>
 
         {/* --- Sección de Categorías Populares --- */}
+        {/* * Las categorías también se mostrarán de inmediato */}
         <section className="py-16 bg-gray-100">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl lg:text-4xl font-semibold text-center text-gray-800 mb-12">
               Explora por Categoría
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {/* Tarjeta de Categoría - Ejemplo 1 */}
+              {/* ... Categorías ... */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Smartphones</h3>
               </div>
-              {/* Tarjeta de Categoría - Ejemplo 2 */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Laptops</h3>
               </div>
-              {/* Tarjeta de Categoría - Ejemplo 3 */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Accesorios</h3>
               </div>
-              {/* Tarjeta de Categoría - Ejemplo 4 */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Componentes PC</h3>
               </div>
-              {/* Tarjeta de Categoría - Ejemplo 5 */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Wearables</h3>
               </div>
-              {/* Tarjeta de Categoría - Ejemplo 6 */}
               <div className="bg-white p-6 rounded-lg shadow-sm text-center cursor-pointer hover:shadow-md transition-shadow duration-300 border border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800">Audio</h3>
               </div>
@@ -117,17 +125,7 @@ export default async function HomePage() {
             </div>
           </div>
         </footer>
-
       </div>
     </>
   );
-}
-
-// TODO: hacer esta funcion reutilizable
-
-async function getOfertas(): Promise<ProductResponse[]> {
-  const res = await fetch('https://api.escuelajs.co/api/v1/products', { 
-    cache: 'no-store' // SSR dinámico
-  });
-  return res.json().then(data => data.slice(0, 8));
 }

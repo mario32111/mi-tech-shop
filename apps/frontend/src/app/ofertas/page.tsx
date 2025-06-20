@@ -1,11 +1,11 @@
 // app/ofertas/page.tsx
 import React, { Suspense } from "react";
 import ProductCard from "../ui/ProductCard";
-import {  ProductResponse } from "../lib/definitions";
-
+import {  Product } from "../lib/definitions";
+import { getOfertas } from "../lib/data"; // Adjust the import path as necessary
 export default async function OfertasPage() {
     // Fetch data directly in the component (runs on server by default)
-    const ofertas: ProductResponse[] = await getOfertas();
+    const ofertas: Product[] = await getOfertas();
 
     return (
         <main className="max-w-6xl mx-auto px-4 py-10">
@@ -23,14 +23,5 @@ export default async function OfertasPage() {
 
         </main>
     );
-}
-
-// Simulate data fetching (replace with real API call)
-async function getOfertas(): Promise<ProductResponse[]> {
-    const res = await fetch('https://api.escuelajs.co/api/v1/products', { cache: 'no-store' })
-
-    return res.json().then((data) => {
-        return data;
-    });
 }
 
