@@ -50,7 +50,7 @@ export default function HeroSlider() {
   const slide = slides[currentSlide];
 
   return (
-    <section className={`-z-50 animate-fade-in ${slide.bgColor} relative h-[500px] lg:h-[500px] text-center transition-colors duration-500`}>
+    <section className={`animate-fade-in ${slide.bgColor} relative h-[500px] lg:h-[500px] text-center transition-colors duration-500`}>
       <div className="container mx-auto px-4 h-full flex flex-col items-center justify-center">
         <div className="max-w-4xl">
           <h1 className={`text-4xl lg:text-6xl font-bold ${slide.textColor} mb-4 leading-tight`}>

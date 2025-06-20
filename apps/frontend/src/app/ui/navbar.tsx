@@ -135,7 +135,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white shadow-md pt-4 animate-slide-in-top">
+      <nav className="relative z-40 bg-white shadow-md pt-4 animate-slide-in-top">
         <div className="w-full max-w-3xl pb-4 mx-auto px-4 flex justify-between items-center min-h-[56px]">
           {/* Logos */}
           <Link
@@ -179,7 +179,7 @@ export default function Navbar() {
 
               {/* Suggestions Dropdown */}
               {showSuggestions && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[90vw] md:w-[calc(100%+2rem)] max-w-2xl bg-white border border-gray-200 rounded-md shadow-lg z-20 mt-1 max-h-80 overflow-y-auto">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-[90vw] md:w-[calc(100%+2rem)] max-w-2xl bg-white border border-gray-200 rounded-md shadow-lg mt-1 max-h-80 overflow-y-auto">
                   {isLoading ? (
                     <div className="p-4 text-center text-gray-500">
                       Buscando sugerencias...
