@@ -17,7 +17,7 @@ import ProductGridLoader from '../app/ui/ProductGridLoader'; // Asegúrate de la
 
 function ProductsSkeleton() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {Array.from({ length: 8 }).map((_, index) => (
         <div key={index} className="bg-white rounded-lg shadow-md p-4 animate-pulse">
           <div className="h-32 bg-gray-200 rounded mb-4"></div>
@@ -54,7 +54,7 @@ export default async function HomePage() {
             </h2>
             {/* * Aquí es donde Suspense ahora será efectivo para la carga principal */}
             <Suspense fallback={<ProductsSkeleton />}>
-              <ProductGridLoader /> {/* <-- ¡La carga de 10 segundos ocurre aquí adentro! */}
+              <ProductGridLoader /> 
             </Suspense>
           </div>
         </section>

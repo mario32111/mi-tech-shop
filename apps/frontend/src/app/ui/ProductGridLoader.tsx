@@ -6,10 +6,8 @@ import ProductCard from './ProductCard'; // Tu ProductCard que es "use client"
 
 export default async function ProductGridLoader() {
     const productos: Product[] = await getOfertas();
-    console.log("Productos obtenidos dentro de ProductGridLoader:", productos);
-
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
             {productos.map((oferta) => (
                 <ProductCard key={oferta.id} product={oferta} />
             ))}

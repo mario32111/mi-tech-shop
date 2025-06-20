@@ -153,51 +153,53 @@ export default function Navbar() {
           </Link>
 
           {/* Barra de Búsqueda */}
-          <div className="mx-2 sm:mx-8 md:mx-4 flex-grow max-w-lg relative"> {/* Añadimos 'relative' para el posicionamiento del dropdown */}
-            <form onSubmit={handleSearchSubmit} className="relative">
-              <input
-                ref={searchInputRef} // Asignamos la ref al input
-                type="text"
-                placeholder="Buscar productos..."
-                className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all duration-200"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-              />
-              <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-              </button>
-            </form>
+          <div className="mx-2 sm:mx-8 md:mx-4 flex-grow flex justify-center"> {/* Cambiamos a flex y justify-center */}
+            <div className="relative w-full max-w-2xl"> {/* Añadimos un contenedor intermedio con max-width */}
+              <form onSubmit={handleSearchSubmit} className="relative">
+                {/* Input de búsqueda (se mantiene igual) */}
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Buscar productos..."
+                  className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-accent-blue transition-all duration-200"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                />
+                <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                  {/* Icono de lupa */}
+                </button>
+              </form>
 
-            {/* Dropdown de resultados de búsqueda */}
-            {showSearchResults && (
-              <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-20 mt-1 max-h-80 overflow-y-auto">
-                {isLoading ? (
-                  <div className="p-4 text-center text-gray-500">
-                    Buscando productos...
-                  </div>
-                ) : searchTerm.trim().length < 2 ? (
-                  <div className="p-4 text-center text-gray-500">
-                    Escribe al menos 2 caracteres para buscar.
-                  </div>
-                ) : productos.length > 0 ? (
-                  <SearchResults productos={productos} />
-                ) : (
-                  <div className="p-4 text-center">
-                    <p className="text-gray-600 font-medium mb-2">
-                      ¡Vaya! No encontramos resultados para "
-                      <span className="font-semibold text-accent-blue">{searchTerm}</span>"
-                    </p>
-                    <p className="text-gray-500 text-sm">
-                      Prueba con palabras clave diferentes o más generales.
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
+              {/* Dropdown de resultados de búsqueda - Cambios aquí */}
+              {showSearchResults && (
+                <div className="absolute left-1/2 -translate-x-1/2 w-[80vw]  bg-white border border-gray-200 rounded-md shadow-lg z-20 mt-1 max-h-80 overflow-y-auto">
+                  {/* Contenido de los resultados se mantiene igual */}
+                  {isLoading ? (
+                    <div className="p-4 text-center text-gray-500">
+                      Buscando productos...
+                    </div>
+                  ) : searchTerm.trim().length < 2 ? (
+                    <div className="p-4 text-center text-gray-500">
+                      Escribe al menos 2 caracteres para buscar.
+                    </div>
+                  ) : productos.length > 0 ? (
+                    <SearchResults productos={productos} />
+                  ) : (
+                    <div className="p-4 text-center">
+                      <p className="text-gray-600 font-medium mb-2">
+                        ¡Vaya! No encontramos resultados para "
+                        <span className="font-semibold text-accent-blue">{searchTerm}</span>"
+                      </p>
+                      <p className="text-gray-500 text-sm">
+                        Prueba con palabras clave diferentes o más generales.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Botón de Menú Hamburguesa (Móvil) y Carrito para Móvil */}
@@ -247,8 +249,8 @@ export default function Navbar() {
         {(isOpen || isClosing) && (
           <div
             className={`bg-white border-t border-gray-200 py-4 mt-2 transition-all duration-300 transform ${isOpen && !isClosing
-                ? 'opacity-100 translate-y-0 pointer-events-auto'
-                : 'opacity-0 -translate-y-2 pointer-events-none'
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-2 pointer-events-none'
               }`}
           >
             <div className="flex flex-col items-center space-y-4 px-4">
