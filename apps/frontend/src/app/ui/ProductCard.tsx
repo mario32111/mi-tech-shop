@@ -1,11 +1,14 @@
 import React from "react";
 import { Product } from "../lib/definitions"; // Asegúrate de que la ruta sea correcta
+import Link from "next/link";
 
 
 // Componente ProductCard
 export default function ProductCard({ product }: { product: Product }) {
   return ( // ¡Faltaba este return!
-    <div
+    <Link
+      href={`/product/${product.id}`} // Link to product detail page
+
       key={product.id}
       className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center hover:shadow-xl transition-shadow"
     >
@@ -21,12 +24,10 @@ export default function ProductCard({ product }: { product: Product }) {
           ${product.price}
         </span>
         <span className="text-2xl font-bold text-red-600">
-          ${ (product.price - (product.discountPercentage * 0.01 * product.price)).toFixed(2) }
+          ${(product.price - (product.discountPercentage * 0.01 * product.price)).toFixed(2)}
         </span>
       </div>
-      <button className="mt-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition-colors">
-        Comprar ahora
-      </button>
-    </div>
+
+    </Link>
   );
 }

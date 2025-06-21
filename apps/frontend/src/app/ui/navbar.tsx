@@ -117,10 +117,6 @@ export default function Navbar() {
   };
 
   const handleInputBlur = () => {
-    // Delay hiding to allow clicks on suggestions.
-    // However, for navigation (which is what suggestions typically do),
-    // a small delay is still good, but you need to be careful not to
-    // close before the click event registers.
     setTimeout(() => {
       setShowSuggestions(false);
     }, 150);
@@ -194,7 +190,7 @@ export default function Navbar() {
                         <Link
                           key={product.id}
                           href={`/product/${product.id}`} // Link to product detail page
-                          onClick={() => resetSearchbar()} // Clear search on suggestion click
+                          onClick={() => {resetSearchbar()}} // Clear search on suggestion click
                           className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
                         >
                           <img

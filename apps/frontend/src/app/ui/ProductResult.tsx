@@ -49,15 +49,6 @@ export default function ProductResult({ product }: { product: Product }) {
           </span>
         </div>
       </div>
-      <button
-        className="
-          w-min bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded transition-colors
-          md:w-auto md:px-4 md:mt-auto
-          text-sm md:text-base
-        "
-      >
-        Comprar ahora
-      </button>
     </div>
   );
 }
