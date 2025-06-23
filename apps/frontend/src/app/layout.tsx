@@ -3,6 +3,7 @@
 import './global.css'; // Tus estilos globales, incluyendo paleta de colores claros
 import { inter } from './fonts'; // <-- Asegúrate que la ruta sea correcta y que importes 'inter'
 import Navbar from './ui/navbar';
+import { Providers } from './providers'; // ✨ ¡Nueva importación!
 
 export const metadata = {
   // Configuración del título: fundamental para SEO
@@ -77,8 +78,9 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}> {/* Aplicamos 'inter.className' */}
         {/* Aquí irán componentes globales como la barra de navegación (Navbar) y el pie de página (Footer) */}
         <Navbar />
-        {children} {/* Aquí se renderizará el contenido específico de cada página */}
-        {/* <Footer /> */}
+        <Providers>
+          {children} {/* Aquí se renderizará el contenido específico de cada página */}
+        </Providers>        {/* <Footer /> */}
       </body>
     </html>
   );
