@@ -1,3 +1,4 @@
+'use client';
 // components/HeroSlider.js
 import React, { useState, useEffect } from 'react';
 
