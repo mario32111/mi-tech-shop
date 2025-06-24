@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useCart } from '../../context/context'; // Ajusta la ruta a tu CartContext
+import { useCart } from '../../context/context'; // Asegúrate de la ruta a tu CartContext
 
 const CartPage: React.FC = () => {
   // Obtenemos todos los métodos y el estado del carrito usando nuestro custom hook
@@ -37,15 +37,28 @@ const CartPage: React.FC = () => {
 
       <div className="space-y-6">
         {cartItems.map((item) => (
-          <div key={item.id} className="flex items-center border-b pb-4 last:border-b-0">
-            <img src={item.image || '/placeholder-product.jpg'} alt={item.name} className="w-24 h-24 object-cover rounded-md mr-6 shadow-sm" />
-            
-            <div className="flex-grow">
-              <h2 className="text-xl font-semibold">{item.name}</h2>
-              <p className="text-lg text-gray-700 mt-1">${item.price.toFixed(2)}</p>
-            </div>
+          <div
+            key={item.id}
+            // Contenedor flex para cada fila del ítem
+            className="flex items-center border-b pb-4 last:border-b-0"
+          >
+            {/* Contenedor para imagen y detalles del producto, envuelto en Link */}
+            {/* Le damos flex para que la imagen y el texto estén en fila */}
+            {/* flex-grow para que ocupe el espacio disponible, pero con un min-w-0 para evitar desbordamientos */}
+            <Link href={`/product/${item.id}`} className="flex items-center flex-grow min-w-0 mr-6">
+              <img
+                src={item.image || '/placeholder-product.jpg'}
+                alt={item.name}
+                className="w-24 h-24 object-cover rounded-md mr-4 shadow-sm" // Añadimos mr-4 para espacio entre imagen y texto
+              />
+              <div className="flex flex-col min-w-0"> {/* flex-col para el texto y min-w-0 para truncar si es necesario */}
+                <h2 className="text-xl font-semibold truncate">{item.name}</h2> {/* truncate para evitar desbordamiento de texto */}
+                <p className="text-lg text-gray-700 mt-1">${item.price.toFixed(2)}</p>
+              </div>
+            </Link>
 
-            <div className="flex items-center space-x-3 mx-4">
+            {/* Controles de cantidad */}
+            <div className="flex items-center space-x-3 mx-4 flex-shrink-0"> {/* flex-shrink-0 para que no se encoja */}
               <button
                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                 className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition duration-200"
@@ -62,9 +75,10 @@ const CartPage: React.FC = () => {
               </button>
             </div>
 
+            {/* Botón de eliminar */}
             <button
               onClick={() => removeFromCart(item.id)}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700 transition duration-300"
+              className="px-4 py-2 bg-red-600 text-white rounded-lg shadow-sm hover:bg-red-700 transition duration-300 flex-shrink-0" // flex-shrink-0 para que no se encoja
             >
               Eliminar
             </button>
