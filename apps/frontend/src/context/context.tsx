@@ -1,6 +1,6 @@
 // context/CartContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Product, CartItem, CartContextType } from '../app/lib/types'; // Importamos los tipos
+import { ProductCart, CartContextType } from '../app/lib/types'; // Importamos los tipos
 
 // Valor inicial del contexto (puede ser null o un objeto por defecto)
 // Es común inicializarlo con un valor que represente su estado "vacío" o "no inicializado"
@@ -23,7 +23,7 @@ interface CartProviderProps {
 
 // El Provider
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<ProductCart[]>([]);
 
   // Opcional: Cargar carrito desde localStorage al inicio (para persistencia)
   useEffect(() => {
@@ -32,7 +32,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const storedCart = localStorage.getItem('cartItems');
       if (storedCart) {
         try {
-          const parsedCart: CartItem[] = JSON.parse(storedCart);
+          const parsedCart: ProductCart[] = JSON.parse(storedCart);
           setCartItems(parsedCart);
         } catch (error) {
           console.error("Failed to parse cart items from localStorage:", error);
@@ -50,7 +50,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   }, [cartItems]);
 
   // Funciones para manipular el carrito
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductCart) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.id === product.id);
       if (existingItem) {
@@ -92,7 +92,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     cartItems,
     addToCart,
     removeFromCart,
-    updateQuantity,
+    updateQuantity, 
     clearCart,
     getTotalItems,
     getTotalPrice,

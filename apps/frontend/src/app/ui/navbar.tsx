@@ -5,20 +5,21 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation'; // Importa useRouter
 import { searchProducts } from '../lib/data'; // Your client-side search function
 import { Product } from '../lib/definitions'; // Your product definition
+import { useCart } from '@/context/context';
 
 export default function Navbar() {
+  const { getTotalItems } = useCart();
+  console.log(getTotalItems);
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [itemCount] = useState(3); // Assuming this is for a cart item count
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false); // Renamed for clarity
   const [suggestions, setSuggestions] = useState<Product[]>([]); // Renamed for clarity
   const [isLoading, setIsLoading] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const currentItemCount = getTotalItems();
+  const router = useRouter(); 
 
-  const router = useRouter(); // Initialize useRouter
-
-  // Function to close the menu and clear the search/suggestions
   const toggleMenu = () => {
     if (showSuggestions) {
       resetSearchbar();
@@ -190,7 +191,7 @@ export default function Navbar() {
                         <Link
                           key={product.id}
                           href={`/product/${product.id}`} // Link to product detail page
-                          onClick={() => {resetSearchbar()}} // Clear search on suggestion click
+                          onClick={() => { resetSearchbar() }} // Clear search on suggestion click
                           className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
                         >
                           <img
@@ -229,7 +230,7 @@ export default function Navbar() {
           {/* Hamburger Menu Button (Mobile) and Cart for Mobile */}
           <div className="flex items-center space-x-4">
             {/* Shopping Cart Icon (Mobile) */}
-            <Link href="/cart" className="relative text-gray-700 hover:text-accent-blue transition-colors duration-200">
+            <Link href="/shoppingCart" className="relative text-gray-700 hover:text-accent-blue transition-colors duration-200">
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -244,9 +245,9 @@ export default function Navbar() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8a2 2 0 100 4m0-4v4m0 0H3m14 0a2 2 0 100 4m0-4v4m0 0h-3"
                 />
               </svg>
-              {itemCount > 0 && (
+              {currentItemCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {itemCount}
+                  {currentItemCount}
                 </span>
               )}
             </Link>
@@ -273,8 +274,8 @@ export default function Navbar() {
         {(isOpen || isClosing) && (
           <div
             className={`bg-white border-t border-gray-200 py-4 mt-2 transition-all duration-300 transform ${isOpen && !isClosing
-                ? 'opacity-100 translate-y-0 pointer-events-auto'
-                : 'opacity-0 -translate-y-2 pointer-events-none'
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-2 pointer-events-none'
               }`}
           >
             <div className="flex flex-col items-center space-y-4 px-4">
