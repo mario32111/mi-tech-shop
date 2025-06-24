@@ -3,6 +3,7 @@
 import './global.css'; // Tus estilos globales, incluyendo paleta de colores claros
 import { inter } from './fonts'; // <-- Asegúrate que la ruta sea correcta y que importes 'inter'
 import Navbar from './ui/navbar';
+import { Providers } from './providers'; // ✨ ¡Nueva importación!
 
 export const metadata = {
   // Configuración del título: fundamental para SEO
@@ -12,7 +13,7 @@ export const metadata = {
   },
   // Descripción general de la tienda: aparece en los resultados de búsqueda
   description: 'Descubre los últimos gadgets, componentes de PC, smartphones y accesorios en Mi Tech Shop. Tecnología de vanguardia al mejor precio.',
-  
+
   // Metadatos para compartir en redes sociales (Open Graph para Facebook, LinkedIn, etc.)
   openGraph: {
     title: 'Mi Tech Shop - Tecnología a tu Alcance',
@@ -30,7 +31,7 @@ export const metadata = {
     locale: 'es_MX', // O 'es_ES', 'es_CL', etc., según tu público principal
     type: 'website', // Tipo de contenido que estás compartiendo
   },
-  
+
   // Metadatos para Twitter Cards
   twitter: {
     card: 'summary_large_image', // Tipo de tarjeta de Twitter
@@ -76,9 +77,10 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${inter.className} antialiased`}> {/* Aplicamos 'inter.className' */}
         {/* Aquí irán componentes globales como la barra de navegación (Navbar) y el pie de página (Footer) */}
-        <Navbar />
-        {children} {/* Aquí se renderizará el contenido específico de cada página */}
-        {/* <Footer /> */}
+        <Providers>
+          <Navbar />
+          {children} {/* Aquí se renderizará el contenido específico de cada página */}
+        </Providers>        {/* <Footer /> */}
       </body>
     </html>
   );
